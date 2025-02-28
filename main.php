@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use App\Produtos\Categoria;
 use App\Produtos\Alimento;
 use App\Produtos\Bebidas;
 use App\Produtos\Higiene;
@@ -11,13 +12,17 @@ use App\Pagamentos\PagamentoInternacional;
 use App\Caixa\Caixa;
 use App\Caixa\CaixaRapido;
 
-$leite = new Alimento(1, "Leite", 5.99, "Litro", "10/05/2025");
+$categoriaAlimento = new Categoria("Alimento");
+$categoriaBebida = new Categoria("Bebida");
+$categoriaHigiene = new Categoria("Higiene");
+
+$leite = new Alimento(1, "Carne bovina", 52.89, "Kg", $categoriaAlimento, "25/09/2025");
 $leite->exibirDetalhes();
 
-$suco = new Bebidas(2, "Suco Prats", 9.89, "Litro", "28/03/2025", "Plástico", "Uva", 1);
+$suco = new Bebidas(2, "Suco Prats", 10.99, "Litro", $categoriaBebida, "31/03/2025", "Plástico", "Laranja", 1);
 $suco->exibirDetalhes();
 
-$saboneteDove = new Higiene(3, "Sabonete Dove", 5.79, "Unidade", "Barra", "lavanda", 90);
+$saboneteDove = new Higiene(3, "Sabonete Dove", 3.99, "Grama", $categoriaHigiene, "Lavanda", 90);
 $saboneteDove->exibirDetalhes();
 
 $carrinho = new CarrinhoDeCompras();
