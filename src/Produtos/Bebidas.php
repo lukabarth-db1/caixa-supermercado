@@ -11,9 +11,9 @@ class Bebidas extends Produtos implements Perecivel {
     private float $volume;
 
     public function __construct(
-        int $codigo, string $nome, float $precoUnitario, string $unidadeMedida, string $dataValidade, string $tipoEmbalagem, string $sabor, float $volume
+        int $codigo, string $nome, float $precoUnitario, string $unidadeMedida, Categoria $categoria, string $dataValidade, string $tipoEmbalagem, string $sabor, float $volume
     ) {
-        parent::__construct($codigo, $nome, $precoUnitario, $unidadeMedida);
+        parent::__construct($codigo, $nome, $precoUnitario, $unidadeMedida, $categoria);
         $this->dataValidade = $dataValidade;
         $this->tipoEmbalagem = $tipoEmbalagem;
         $this->sabor = $sabor;

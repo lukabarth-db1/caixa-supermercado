@@ -8,9 +8,9 @@ class Alimento extends Produtos implements Perecivel {
     private string $dataValidade;
 
     public function __construct(
-        int $codigo, string $nome, float $precoUnitario, string $unidadeMedida, string $dataValidade
+        int $codigo, string $nome, float $precoUnitario, string $unidadeMedida, Categoria $categoria, string $dataValidade
     ) {
-        parent::__construct($codigo, $nome, $precoUnitario, $unidadeMedida);
+        parent::__construct($codigo, $nome, $precoUnitario, $unidadeMedida, $categoria);
         $this->dataValidade = $dataValidade;
     }
         
