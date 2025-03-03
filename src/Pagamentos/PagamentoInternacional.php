@@ -4,16 +4,38 @@ declare(strict_types=1);
 
 namespace App\Pagamentos;
 
-use App\CarrinhoDeCompras\CarrinhoDeCompras;
-
 class PagamentoInternacional extends Pagamento {
-    public function __construct(CarrinhoDeCompras $carrinho, string $metodoPagamento) {
-        parent::__construct($carrinho, $metodoPagamento);
+    private bool $taxaAplicada = false;
+
+    public function __construct(float $valorTotal, string $tipo) {
+        parent::__construct($valorTotal, $tipo);
     }
 
-    public function processarPagamento(): void {
-        $this->valorTotal *= 1.10;
+    public function aplicarTaxa(): void {
+        if ($this->taxaAplicada) {
+            return;
+        }
 
-        parent::processarPagamento();
+        $this->setValorTotal($this->getValorTotal() * 1.10);
+        $this->taxaAplicada = true;
+
+        echo "Para pagamentos internacionais será aplicado uma taxa de 10%. Novo total: R$ $this->valorTotal";
+    }
+
+    public function processarPagamento(): bool {
+        if ($this->getTipo() !== "Internacional") {
+            echo "Tipo de pagamento inválido!" . PHP_EOL;
+            $this->setStatus("Recusado");
+            return false;
+        }
+
+        $this->aplicarTaxa();
+
+        $this->setStatus("Aprovado");
+        return true;
+    }
+
+    public function exibirDetalhes(): void {
+        echo $this->detalhesPagamento();
     }
 }
