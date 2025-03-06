@@ -3,84 +3,54 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Produtos\Categoria;
-use App\Produtos\Alimento;
-use App\Produtos\Bebidas;
-use App\Produtos\Higiene;
 use App\CarrinhoDeCompras\CarrinhoDeCompras;
-use App\Pagamentos\Pix;
-use App\Pagamentos\Cartao;
-use App\Pagamentos\Dinheiro;
-use App\Pagamentos\PagamentoInternacional;
 use App\Caixa\Caixa;
-use App\Caixa\CaixaRapido;
+use App\Caixa\ProcessaPagamento;
+use App\Pagamentos\Pagamento;
+use App\Produtos\Produto;
 
 // Criando categorias
 $categoriaAlimento = new Categoria("Alimento");
 $categoriaBebida = new Categoria("Bebida");
 $categoriaHigiene = new Categoria("Higiene");
+$categoriaImportado = new Categoria("Importado");
 
 // Criando produtos
-$leite = new Alimento(1, "Carne bovina", 52.89, "Kg", $categoriaAlimento, "25/09/2025");
-$leite->exibirDetalhes();
-
-$suco = new Bebidas(2, "Suco Prats", 10.99, "Litro", $categoriaBebida, "31/03/2025", "Plástico", "Laranja", 1);
-$suco->exibirDetalhes();
-
-$saboneteDove = new Higiene(3, "Sabonete Dove", 3.99, "Grama", $categoriaHigiene, "Lavanda", 90);
-$saboneteDove->exibirDetalhes();
+$chocolateLindt = new Produto(1, "Chocolate Lindt", $categoriaImportado, 15.89);
+$carneBovina = new Produto(2, "Alcatra", $categoriaAlimento, 42.49);
+$laranja = new Produto(3, "Laranja", $categoriaAlimento, 10.99);
+$bolachaTrakinas = new Produto(4, "Bolacha recheada", $categoriaAlimento, 4.79);
+$cafe = new Produto(5, "Café 3 corações", $categoriaBebida, 21.89);
+$barraMilka = new Produto(6, "Barra de chocolate Milka", $categoriaImportado, 25.50);
 
 // Criando o carrinho de compras
 $carrinho = new CarrinhoDeCompras();
-$carrinho->adicionarProduto($leite);
-$carrinho->adicionarProduto($suco);
-$carrinho->adicionarProduto($saboneteDove);
-
-$carrinho->exibirCarrinho();
-
-// Removendo um produto e validando o carrinho
-$carrinho->removerProduto(3);
-$carrinho->exibirCarrinho();
+$carrinho->adicionarProduto($chocolateLindt);
+$carrinho->adicionarProduto($carneBovina);
+$carrinho->adicionarProduto($laranja);
+$carrinho->adicionarProduto($bolachaTrakinas);
+$carrinho->adicionarProduto($cafe);
+$carrinho->adicionarProduto($barraMilka);
 $carrinho->validarCarrinho();
 
 // Calculando o total do carrinho
-$total = $carrinho->calcularTotal();
-
+$totalCarrinho = $carrinho->calcularTotal();
 echo str_repeat("-", 30) . PHP_EOL;
 
 // Instanciando os pagamentos com o valor do total
-$pagamentoDinheiro = new Dinheiro($total, "Dinheiro", 100.00);
-$pagamentoPix = new Pix($total, "Pix");
-$pagamentoCartaoCredito = new Cartao($total, "Crédito", 1000, 250);
-$pagamentoCartaoDebito = new Cartao($total, "Débito", 500, 0);
+$pagamento = new Pagamento($totalCarrinho, "Cartão");
 
 // Processando os pagamentos
-$pagamentoDinheiro->processarPagamento();
-$pagamentoDinheiro->exibirDetalhes();
-
-$pagamentoPix->processarPagamento();
-$pagamentoPix->exibirDetalhes();
-
-$pagamentoCartaoCredito->processarPagamento();
-$pagamentoCartaoCredito->exibirDetalhes();
-
-$pagamentoInternacional = new PagamentoInternacional($total, "Internacional");
-$pagamentoInternacional->processarPagamento();
-$pagamentoInternacional->exibirDetalhes();
+$processaPagamento = new ProcessaPagamento($pagamento);
 
 // Instanciando os caixas
-$caixaNormal1 = new Caixa(1, $carrinho);
-$caixaNormal2 = new Caixa(2, $carrinho);
-$caixaNormal3 = new Caixa(3, $carrinho);
-$caixaRapido = new CaixaRapido(4, $carrinho);
+$caixa1 = new Caixa(1, $carrinho);
 
 // Abrindo os caixas
-$caixaNormal1->abrirCaixa();
-$caixaRapido->abrirCaixa();
+$caixa1->abrirCaixa();
 
 // Processando as compras nos caixas
-$caixaNormal1->processarCompra($pagamentoDinheiro);
-$caixaRapido->processarCompra($pagamentoPix);
+$caixa1->processarCompra($processaPagamento);
 
-// Exibindo relatórios dos caixas
-$caixaNormal1->exibirRelatorio();
-$caixaRapido->fecharCaixa();
+// Exibindo cupom fiscal
+$caixa1->gerarCupomFiscal($processaPagamento);
