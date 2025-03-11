@@ -28,6 +28,10 @@ class Caixa {
         $this->totalCompra = $totalCompra;
     }
 
+    public function getTipoPagamento(): TipoEValorPagamento {
+        return $this->tipoEValorPagamento;
+    }
+
     public function getCarrinho(): CarrinhoDeCompras {
         return $this->carrinho;
     }

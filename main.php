@@ -39,7 +39,7 @@ echo str_repeat("-", 30) . PHP_EOL;
 
 // Para passar a forma de pagamento na linha de comando
 if ($argc < 2) {
-    echo "Uso correto: php main.php <forma_de_pagamento>\n";
+    echo "Uso correto: php main.php <forma_de_pagamento>" . PHP_EOL;
     exit(1);
 }
 
@@ -52,7 +52,7 @@ $tipoEValorCarrinho = new TipoEValorPagamento($tipoPagamento, $totalCarrinho);
 $caixa = new Caixa(1, $carrinho, $tipoEValorCarrinho);
 
 // Processando os pagamentos
-$processaPagamento = new ProcessaPagamento($tipoEValorCarrinho, $caixa);
+$processaPagamento = new ProcessaPagamento($caixa);
 $processaPagamento->processarPagamentos();
 
 // Verifica se o carrinho está vazio

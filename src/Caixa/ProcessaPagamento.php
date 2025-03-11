@@ -8,19 +8,13 @@ use App\Caixa\Caixa;
 
 class ProcessaPagamento {
     private Caixa $caixa;
-    private TipoEValorPagamento $tipoEValorPagamento;
     private bool $taxaAplicada = false;
     private bool $descontoAplicado = false;
     private float $valorEmDinheiro = 200;
     private float $troco = 0.0;
 
-    public function __construct(TipoEValorPagamento $tipoEValorPagamento, Caixa $caixa) {
-        $this->tipoEValorPagamento = $tipoEValorPagamento;
+    public function __construct(Caixa $caixa) {
         $this->caixa = $caixa;
-    }
-
-    public function getTipoEValorPagamento(): TipoEValorPagamento {
-        return $this->tipoEValorPagamento;
     }
 
     public function getTaxaAplicada(): bool {
@@ -61,14 +55,14 @@ class ProcessaPagamento {
         }
 
         $novoValor = $this->caixa->getCarrinho()->calcularTotal() * 0.95;
-        $this->tipoEValorPagamento->setValorPagamento($novoValor);
+        $this->caixa->setTotalCompra($novoValor);
         $this->descontoAplicado = true;
 
         echo "💰 Pagamento via Pix! Desconto de 5% aplicado. Novo total: R$ " . number_format($novoValor, 2, ',', '.') . PHP_EOL;
     }
 
     public function calcularTroco(): void {
-        $troco = $this->getValorEmDinheiro() - $this->tipoEValorPagamento->getValorPagamento();
+        $troco = $this->getValorEmDinheiro() - $this->caixa->getTotalCompra();
         if ($troco > 0) {
             $this->setTroco($troco);
             echo "🪙 Troco de R$ " . number_format($troco, 2, ',', '.') . " devolvido ao cliente." . PHP_EOL;
@@ -76,31 +70,30 @@ class ProcessaPagamento {
     }
 
     public function valorInsuficiente(): bool {
-        return $this->getValorEmDinheiro() < $this->tipoEValorPagamento->getValorPagamento();
+        return $this->getValorEmDinheiro() < $this->caixa->getTotalCompra();
     }
 
     public function processarPagamentos(): bool {
-        if (!in_array($this->tipoEValorPagamento->getTipoPagamento(), ["Pix", "Dinheiro", "Cartão"], true)) {
+        if (!in_array($this->caixa->getTipoPagamento()->getTipoPagamento(), ["Pix", "Dinheiro", "Cartão"], true)) {
             echo "⚠️ Tipo de pagamento inválido!" . PHP_EOL;
             exit();
         }
 
-        if ($this->tipoEValorPagamento->getTipoPagamento() === "Pix") {
+        if ($this->caixa->getTipoPagamento()->getTipoPagamento() === "Pix") {
             $this->aplicarDescontoPagamentoPix();
             return true;
         }
-
-        if ($this->tipoEValorPagamento->getTipoPagamento() === "Dinheiro") {
+        
+        if ($this->caixa->getTipoPagamento()->getTipoPagamento() === "Dinheiro") {
             if ($this->valorInsuficiente()) {
                 echo "❌ Valor insuficiente." . PHP_EOL;
                 exit();
             }
-
             $this->calcularTroco();
             return true;
         }
-
-        if ($this->tipoEValorPagamento->getTipoPagamento() === "Cartão") {
+        
+        if ($this->caixa->getTipoPagamento()->getTipoPagamento() === "Cartão") {
             return true;
         }
 
