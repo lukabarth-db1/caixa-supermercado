@@ -51,12 +51,12 @@ $tipoEValorCarrinho = new TipoEValorPagamento($tipoPagamento, $totalCarrinho);
 // Instanciando os pagamentos com o valor do total
 $caixa = new Caixa(1, $carrinho, $tipoEValorCarrinho);
 
+// Verifica se o carrinho está vazio
+$caixa->verificaSeCarrinhoEstaVazio();
+
 // Processando os pagamentos
 $processaPagamento = new ProcessaPagamento($caixa);
 $processaPagamento->processarPagamentos();
-
-// Verifica se o carrinho está vazio
-$caixa->verificaSeCarrinhoEstaVazio();
 
 // Exibindo cupom fiscal
 $caixa->gerarCupomFiscal($processaPagamento);
