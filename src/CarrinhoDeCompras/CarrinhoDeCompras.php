@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\CarrinhoDeCompras;
 
-use App\Servicos\ServicoImportacao;
 use App\Produtos\Produto;
+use App\Servicos\ServicoImportacao;
 
 class CarrinhoDeCompras {
     private array $produtos = [];
@@ -18,7 +18,7 @@ class CarrinhoDeCompras {
         $this->produtos[] = $produto;
     }
 
-    public function removerProduto(int $codigo): void {
+    public function removerProduto(Produto $codigo): void {
         foreach ($this->getProdutos() as $index => $produto) {
             if ($produto->getCodigo() === $codigo) {
                 unset($this->produtos[$index]);
@@ -31,7 +31,7 @@ class CarrinhoDeCompras {
     }
     
 
-    public function exibirCarrinho(): void {
+    public function exibirCarrinho(Produto $produto): void {
         if ($this->estaVazio()) {
             echo "O carrinho está vazio." . PHP_EOL;
             return;

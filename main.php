@@ -6,7 +6,7 @@ use App\Produtos\Categoria;
 use App\CarrinhoDeCompras\CarrinhoDeCompras;
 use App\Caixa\Caixa;
 use App\Caixa\ProcessaPagamento;
-use App\Pagamentos\Pagamento;
+use App\Caixa\TipoEValorPagamento;
 use App\Produtos\Produto;
 
 // Criando categorias
@@ -37,20 +37,26 @@ $carrinho->validarCarrinho();
 $totalCarrinho = $carrinho->calcularTotal();
 echo str_repeat("-", 30) . PHP_EOL;
 
+// Para passar a forma de pagamento na linha de comando
+if ($argc < 2) {
+    echo "Uso correto: php main.php <forma_de_pagamento>\n";
+    exit(1);
+}
+
+$tipoPagamento = $argv[1];
+
+// Instanciando o tipo e valor do carrinho
+$tipoEValorCarrinho = new TipoEValorPagamento($tipoPagamento, $totalCarrinho);
+
 // Instanciando os pagamentos com o valor do total
-$pagamento = new Pagamento($totalCarrinho, "Cartão");
+$caixa = new Caixa(1, $carrinho, $tipoEValorCarrinho);
 
 // Processando os pagamentos
-$processaPagamento = new ProcessaPagamento($pagamento);
+$processaPagamento = new ProcessaPagamento($tipoEValorCarrinho, $caixa);
+$processaPagamento->processarPagamentos();
 
-// Instanciando os caixas
-$caixa1 = new Caixa(1, $carrinho);
-
-// Abrindo os caixas
-$caixa1->abrirCaixa();
-
-// Processando as compras nos caixas
-$caixa1->processarCompra($processaPagamento);
+// Verifica se o carrinho está vazio
+$caixa->verificaSeCarrinhoEstaVazio();
 
 // Exibindo cupom fiscal
-$caixa1->gerarCupomFiscal($processaPagamento);
+$caixa->gerarCupomFiscal($processaPagamento);

@@ -8,7 +8,7 @@ class ServicoImportacao {
     public function aplicarTaxa(array $produtos): void {
         foreach ($produtos as $produto) {
             if ($produto->getCategoria()->getNome() === "Importado") {
-                $produto->aplicarTaxaSeImportado();
+                $produto->aplicarTaxaSeProdutoImportado();
             }
         }
     }

@@ -9,6 +9,7 @@ class Produto {
     private string $nome;
     private float $precoUnitario;
     private Categoria $categoria;
+    private bool $taxaAplicada = false;
 
     public function __construct(int $codigo, string $nome, Categoria $categoria, float $precoUnitario) {
         $this->codigo = $codigo;
@@ -37,15 +38,14 @@ class Produto {
         return $this->categoria;
     }
 
-    public function aplicarTaxaSeImportado(): void {
+    public function aplicarTaxaSeProdutoImportado(): void {
         $produtosImportados = [];
 
-        if ($this->categoria->getNome() === "Importado") {
+        if ($this->categoria->getNome() === "Importado" && !$this->taxaAplicada) {
             $this->precoUnitario *= 1.10;
+            $this->taxaAplicada = true;
             $produtosImportados[] = "{$this->nome} - Preço atualizado: R$ " . number_format($this->precoUnitario, 2, ',', '.') . PHP_EOL;
-        }
-
-        if (!empty($produtosImportados)) {
+            
             echo "🔹 Taxa de 10% aplicada ao produto:" . PHP_EOL;
             foreach ($produtosImportados as $produto) {
                 echo "=> $produto" . PHP_EOL;
