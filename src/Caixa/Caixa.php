@@ -12,7 +12,7 @@ class Caixa {
     private int $numeroCaixa;
     private CarrinhoDeCompras $carrinho;
     private TipoEValorPagamento $tipoEValorPagamento;
-    private float $totalCompra = 0.0;
+    private float $totalCompra;
 
     public function __construct(int $numeroCaixa, CarrinhoDeCompras $carrinho, TipoEValorPagamento $tipoEValorPagamento) {
         $this->numeroCaixa = $numeroCaixa;
@@ -21,7 +21,7 @@ class Caixa {
     }
 
     public function getTotalCompra(): float {
-        return $this->totalCompra;
+        return $this->carrinho->calcularTotal();
     }
 
     public function setTotalCompra($totalCompra): void {
