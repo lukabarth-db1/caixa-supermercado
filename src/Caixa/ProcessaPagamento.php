@@ -65,6 +65,7 @@ class ProcessaPagamento {
         $troco = $this->getValorEmDinheiro() - $this->caixa->getTotalCompra();
         if ($troco > 0) {
             $this->setTroco($troco);
+            echo "💸 Valor recebido: " . number_format($this->getValorEmDinheiro(), 2, ',', '.'). PHP_EOL;
             echo "🪙 Troco de R$ " . number_format($troco, 2, ',', '.') . " devolvido ao cliente." . PHP_EOL;
         }
     }
