@@ -71,7 +71,10 @@ class Caixa {
 
             echo "💰 Subtotal R$: " . number_format($this->getTotalCompra(), 2, ",", ".") . PHP_EOL;
             echo "💰 Total com desconto R$: " . $totalComDesconto . PHP_EOL;
-        } else echo "💰 Total R$: " . number_format($this->getTotalCompra(), 2, ",", ".") . PHP_EOL;
+            return;
+        }
+
+        echo "💰 Total R$: " . number_format($this->getTotalCompra(), 2, ",", ".") . PHP_EOL;
     }
 
     public function gerarCupomFiscal(): void {
